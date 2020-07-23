@@ -19,14 +19,34 @@ let todos:Array<Todo> = [
 function remove(todo): void {
     todos = todos.filter(t => t !== todo);
 }
+
+function mark(todo: Todo, done: boolean): void {
+    todo.done = done;
+    remove(todo);
+    todos = todos.concat(todo);
+}
+
+function add(input: {value: string}): void {
+    const todo: Todo = {
+        id: uid++,
+        done: false,
+        description: input.value
+    };
+    todos = [todo, ...todos];
+    input.value = '';
+}
 </script>
 
 <div class='board'>
+	<input
+		placeholder="what needs to be done?"
+		on:keydown={e => e.key === 'Enter' && add(e.target)}
+	>
 	<div>
 		<h2>Todo</h2>
 		{#each todos.filter(t => !t.done) as todo (todo.id)}
 			<label>
-				<input type="checkbox">
+				<input type="checkbox" on:change={() => mark(todo, true)}>
 				{todo.description}
 				<button class="remove" on:click="{() => remove(todo)}">remove</button>
 			</label>
@@ -36,7 +56,7 @@ function remove(todo): void {
 		<h2>Done</h2>
 		{#each todos.filter(t => t.done) as todo (todo.id)}
 			<label>
-				<input type="checkbox">
+				<input type="checkbox" checked on:change={() => mark(todo, false)}>
 				{todo.description}
 				<button class="remove" on:click="{() => remove(todo)}">remove</button>
 			</label>
@@ -87,5 +107,13 @@ function remove(todo): void {
 		transition: opacity 0.2s;
 		text-indent: -9999px;
 		cursor: pointer;
-}
+	}
+	.board > input {
+		font-size: 1.4em;
+		grid-column: 1/3;
+	}
+	.done {
+		border: 1px solid hsl(240, 8%, 90%);
+		background-color:hsl(240, 8%, 98%);
+	}
 </style>
