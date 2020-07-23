@@ -1,59 +1,87 @@
-# Svelte Typescript workshop
+# Svelte workshop - Step 1
 
 ![Svelte icon](https://svelte.dev/svelte-logo-horizontal.svg)
 
-This project is a self contained workshop to get started with Svelte using Typescript. 
-Get from zero to having a grasp of what Svelte offers by following the steps in this repository.
+Files everywhere! But all in the right and usual places. The src folder will contain the application code. The `main.js` in there will bootstrap the application. But what it that next to it? App.`svelte`? What? Another extension?
 
-This workshop is an overview based on the [Svelte tutorial](https://svelte.dev/tutorial), and it's intended as a quick dive into Svelte, to get a developer quickly up to speed with Svelte and creating the first components right away.
+Yes. It is required to allow Svelte to process it's content into the lighting fast vanilla JS that will run in the browser.
 
-## What you will build?
+Let's dissect it for a moment:
 
-![What to expect](https://github.com/ladraum/svelte-typescript-workshop/blob/main/what_to_expect.gif?raw=true)
+- It starts with the `<script>` tag which is the section which will contain the logic. It's marked as ` lang="ts"` so we can use Typescript to write our code.
+- There is `<main>`, which is the HTML part of the component. In this case, is using the `<main>` [HTML tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main) to display the content, and inside it, the `{name}` binding, which we'll talk more about later.
+- And finally the `<style>` portion of it, which is the styles and CSS for the component.
 
-Beatiful transitions, captioning effects, all making sure the user feels in control of the application.
-Too much trouble to build? Just go through this workshop to see for yourself.
+Pretty straighforward, right?
 
-## How to use this repository
+A few things to mention:
 
-This workshop is divided in steps, each with its own branch. Start with the `main` branch, then `step-1`, `step-2`, ... Each branch has a README.md which proposes:
+In the `<script>` portion, it's exporting the `name` variable. This turns into the component properties. That means, if someone would use this component, they could use it as `<App name="Svelte">` and it would show as `Hello Svelte`. 
 
-- Problem to solve
-- Instructions to achieve the solution
-- Expected outcome
+That property can be set as defatul in the component, as `export let name: string = "world";`. That would:
+- For `<App>`, would render as `hello world`
+- For `<App name="Svelte">`, would render as `hello Svelte`
 
-For starter, this is the proposition for the first step:
+To add logic to the HTML from the Typescript portion, Svelte uses the the `{#` annotation. Use it with each to display lists of data.
 
 ### Problem to solve
 
-How to start a new Svelte project?
+Let's display some data. Display a list of Todo items that will be interactive in the future steps.
+
+Let's also style the header of the todos to be a bit better than the standard `<h2>`.
 
 ### Instructions to achieve the solution
 
-To generate a project, we're going to use a Svelte template, to speed things up and get you right to coding.
-I've created a typescript template that works with the [official typescript plugin for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+Replace the script portion of the `App.svelte` file with:
 
-```bash
-npx degit ladraum/svelte-typescript-vscode-template svelte-typescript-workshop
-cd svelte-typescript-workshop
-npm install
-npm run dev
+```typescript
+let uid:number = 1;
+
+interface Todo {
+    id: number,
+    done: boolean,
+    description: string
+}
+
+let todos:Array<Todo> = [
+    { id: uid++, done: false, description: 'write a Svelte workshop' },
+    { id: uid++, done: false, description: 'start writing blog post' },
+    { id: uid++, done: false, description: 'fix some bugs' },
+    { id: uid++, done: false, description: 'add a feature' },
+    { id: uid++, done: false, description: 'add another feature' },
+    { id: uid++, done: false, description: 'add even another feature' },
+];
 ```
+
+And also replace the style portion with:
+```css
+h2 {
+    font-size: 2em;
+    font-weight: 200;
+    user-select: none;
+    margin: 0 0 0.5em 0;
+}
+```
+
+And for the display portion, use: 
+
+```html
+<div>
+	<h2>Todo</h2>
+	{#each todos as todo (todo.id)}
+		<label>
+			<input type="checkbox">
+			{todo.description}
+		</label>
+	{/each}
+</div>
+```
+
+Note the `{#each todos as todo (todo.id)}`, that can iterate over items and display the content for each one. It uses the `(todo.id)` to identify each of the items to display.
 
 ### Expected outcome
 
-Having a Svelte ready project to start coding with. It should look like this:
-![Image](https://i.ibb.co/fqkg9wc/svelte-preview.png)
+The list of items should look like this:
+![Image](https://i.ibb.co/74fJ0Xs/step2-start.png)
 
-Now check out the `step-1` branch for the next step.
-
-## TLDR
-
-For an even quicker overview, check the differences for each step:
-
-- [Setup](https://github.com/ladraum/svelte-typescript-workshop/compare/main...step-1?expand=1#diff-534c52cd83756b9c3b6c7b2243edda00)
-- [Display list](https://github.com/ladraum/svelte-typescript-workshop/compare/step-1...step-2?expand=1#diff-534c52cd83756b9c3b6c7b2243edda00)
-- [Listen to DOM events](https://github.com/ladraum/svelte-typescript-workshop/compare/step-2...step-3?expand=1#diff-534c52cd83756b9c3b6c7b2243edda00)
-- [Update component State](https://github.com/ladraum/svelte-typescript-workshop/compare/step-3...step-4?expand=1#diff-534c52cd83756b9c3b6c7b2243edda00)
-- [Add animation](https://github.com/ladraum/svelte-typescript-workshop/compare/step-4...step-5#diff-534c52cd83756b9c3b6c7b2243edda00)
-- [Load data from server and handle loading state](https://github.com/ladraum/svelte-typescript-workshop/compare/step-5...step-6#diff-534c52cd83756b9c3b6c7b2243edda00)
+Now check out the `step-2` branch for the next step.
