@@ -70,11 +70,38 @@ const LOGO: image = {
     width: 200,
     height: 140
 };
+let promise: Promise<string> = getRandomNumber();
+async function getRandomNumber(): Promise<string> {
+    const res: Response = await fetch(`https://svelte.dev/tutorial/random-number`);
+    const text = await res.text();
+    if (res.ok) {
+        return text;
+    } else {
+        throw new Error(text);
+    }
+}
+function handleRandomNumberClick(): void {
+    promise = getRandomNumber();
+}
 </script>
 
 <div class='board'>
 	<div class="logo-container">
 		<img {...LOGO} />
+	</div>
+	<div>
+		<button class="generator" on:click={handleRandomNumberClick}>
+			Generate random number
+		</button>
+	</div>
+	<div>
+		{#await promise}
+			...waiting
+		{:then number}
+			The number is {number}
+		{:catch error}
+			<span style="color: red">{error.message}</span>
+		{/await}
 	</div>
 	<input
 		placeholder="what needs to be done?"

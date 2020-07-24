@@ -1,69 +1,93 @@
-# Svelte workshop - Step 6
+*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
 
-![Svelte icon](https://svelte.dev/svelte-logo-horizontal.svg)
+---
 
-Since we've handled the todo list, let's add something else that is common in applications: loading data from the server. Svelte can handle promisses directly in the HTML, so you don't have to create and handle a separated state just for that.
+# svelte app
 
-### Problem to solve
+This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
 
-Load a randon number from a server, display a waiting message for the user while loading, and display a message in case of an error.
+To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
 
-### Instructions to achieve the solution
-
-Add the code to retrieve the random number in the `<script>` portion:
-
-```typescript
-let promise: Promise<string> = getRandomNumber();
-async function getRandomNumber(): Promise<string> {
-    const res: Response = await fetch(`https://svelte.dev/tutorial/random-number`);
-    const text = await res.text();
-    if (res.ok) {
-        return text;
-    } else {
-        throw new Error(text);
-    }
-}
+```bash
+npx degit sveltejs/template svelte-app
+cd svelte-app
 ```
 
-Let's also add a function to trigger it through a button:
+*Note that you will need to have [Node.js](https://nodejs.org) installed.*
 
-```typescript
-function handleRandomNumberClick(): void {
-    promise = getRandomNumber();
-}
+
+## Get started
+
+Install the dependencies...
+
+```bash
+cd svelte-app
+npm install
 ```
 
-Then we the button:
+...then start [Rollup](https://rollupjs.org):
 
-```html
-<div>
-    <button class="generator" on:click={handleRandomNumberClick}>
-        Generate random number
-    </button>
-</div>
+```bash
+npm run dev
 ```
 
-And finally display the loaded value:
+Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
 
-```html
-<div>
-    {#await promise}
-        ...waiting
-    {:then number}
-        The number is {number}
-    {:catch error}
-        <span style="color: red">{error.message}</span>
-    {/await}
-</div>
+By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+
+
+## Building and running in production mode
+
+To create an optimised version of the app:
+
+```bash
+npm run build
 ```
 
-Using `{#await` we can attach the code directly to the markup. We can even use `{#if`, `{:else}` and `{/if}` for conditionals in the markup too.
+You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
 
-### Expected outcome
 
-The list of items should look like this:
-![Image](https://github.com/ladraum/svelte-typescript-workshop/raw/main/what_to_expect.gif)
+## Single-page app mode
 
-If you miss any step, you can check out the `final` branch for the end result.
+By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
 
-Thank you for following this workshop!
+If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+
+```js
+"start": "sirv public --single"
+```
+
+
+## Deploying to the web
+
+### With [now](https://zeit.co/now)
+
+Install `now` if you haven't already:
+
+```bash
+npm install -g now
+```
+
+Then, from within your project folder:
+
+```bash
+cd public
+now deploy --name my-project
+```
+
+As an alternative, use the [Now desktop client](https://zeit.co/download) and simply drag the unzipped project folder to the taskbar icon.
+
+### With [surge](https://surge.sh/)
+
+Install `surge` if you haven't already:
+
+```bash
+npm install -g surge
+```
+
+Then, from within your project folder:
+
+```bash
+npm run build
+surge public my-project.surge.sh
+```
