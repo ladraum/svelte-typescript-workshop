@@ -57,9 +57,25 @@ const [send, receive] = crossfade({
         };
     }
 });
+interface image {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+}
+
+const LOGO: image = {
+    src: 'http://womenintech-awards.com/wordpress/wp-content/uploads/2019/10/rangle-wit-awards.png',
+    alt: 'Rangle.io',
+    width: 200,
+    height: 140
+};
 </script>
 
 <div class='board'>
+	<div class="logo-container">
+		<img {...LOGO} />
+	</div>
 	<input
 		placeholder="what needs to be done?"
 		on:keydown={e => e.key === 'Enter' && add(e.target)}
@@ -149,5 +165,12 @@ const [send, receive] = crossfade({
 	}
 	label:hover .remove {
 		opacity: 1;
+	}
+	.logo-container {
+		grid-column-start: 1;
+		grid-column-end: 3;
+		grid-row-start: 1;
+		grid-row-end: 1;
+		text-align: center;
 	}
 </style>
