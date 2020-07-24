@@ -71,4 +71,4 @@ And let's add some style to the input and for the done items:
 The list of items should look like this:
 ![Image](https://github.com/ladraum/svelte-typescript-workshop/raw/step-3/what_to_expect.gif)
 
-Now check out the `step-4` branch for the next step.s
+Now check out the `step-4` branch for the next step.
