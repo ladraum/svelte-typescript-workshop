@@ -54,6 +54,6 @@ That way you don't have to pass every single property separetly.
 ### Expected outcome
 
 The list of items should look like this:
-![Image](https://github.com/ladraum/svelte-workshop/raw/step-5/what_to_expect.gif)
+![Image](https://github.com/ladraum/svelte-typescript-workshop/raw/step-5/what_to_expect.gif)
 
 Now check out the `step-6` branch for the next step.
