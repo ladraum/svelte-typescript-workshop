@@ -1,4 +1,8 @@
 <script lang="ts">
+import { flip } from 'svelte/animate';
+import { crossfade } from 'svelte/transition';
+import { quintOut } from 'svelte/easing';
+
 let uid:number = 1;
 
 interface Todo {
@@ -35,6 +39,24 @@ function add(input: {value: string}): void {
     todos = [todo, ...todos];
     input.value = '';
 }
+
+const [send, receive] = crossfade({
+    duration: d => Math.sqrt(d * 200),
+
+    fallback(node, params) {
+        const style = getComputedStyle(node);
+        const transform = style.transform === 'none' ? '' : style.transform;
+
+        return {
+            duration: 600,
+            easing: quintOut,
+            css: t => `
+                transform: ${transform} scale(${t});
+                opacity: ${t}
+            `
+        };
+    }
+});
 </script>
 
 <div class='board'>
@@ -45,7 +67,11 @@ function add(input: {value: string}): void {
 	<div>
 		<h2>Todo</h2>
 		{#each todos.filter(t => !t.done) as todo (todo.id)}
-			<label>
+			<label
+				in:receive="{{key: todo.id}}"
+				out:send="{{key: todo.id}}"
+				animate:flip
+			>
 				<input type="checkbox" on:change={() => mark(todo, true)}>
 				{todo.description}
 				<button class="remove" on:click="{() => remove(todo)}">remove</button>
@@ -55,7 +81,11 @@ function add(input: {value: string}): void {
 	<div>
 		<h2>Done</h2>
 		{#each todos.filter(t => t.done) as todo (todo.id)}
-			<label>
+			<label
+				in:receive="{{key: todo.id}}"
+				out:send="{{key: todo.id}}"
+				animate:flip
+			>
 				<input type="checkbox" checked on:change={() => mark(todo, false)}>
 				{todo.description}
 				<button class="remove" on:click="{() => remove(todo)}">remove</button>
@@ -107,6 +137,7 @@ function add(input: {value: string}): void {
 		transition: opacity 0.2s;
 		text-indent: -9999px;
 		cursor: pointer;
+		opacity: 0;
 	}
 	.board > input {
 		font-size: 1.4em;
@@ -115,5 +146,8 @@ function add(input: {value: string}): void {
 	.done {
 		border: 1px solid hsl(240, 8%, 90%);
 		background-color:hsl(240, 8%, 98%);
+	}
+	label:hover .remove {
+		opacity: 1;
 	}
 </style>
